@@ -26,19 +26,19 @@ data_transforms_enabled: true
 # Enable audit logging (enterprise feature).
 # https://docs.redpanda.com/current/manage/audit-logging/
 audit_enabled: true
-# Enable Tiered Storage (enterprise feature).
-# https://docs.redpanda.com/current/manage/tiered-storage/
-cloud_storage_enabled: true
-cloud_storage_region: local
-cloud_storage_access_key: minio
-cloud_storage_secret_key: redpandaTieredStorage7
-cloud_storage_api_endpoint: minio
-cloud_storage_api_endpoint_port: 9000
-cloud_storage_disable_tls: true
-cloud_storage_bucket: redpanda
-# Forces segments to be uploaded to Tiered Storage faster for the purposes of the quickstart
-# https://docs.redpanda.com/current/reference/properties/object-storage-properties/#cloud_storage_segment_max_upload_interval_sec
-cloud_storage_segment_max_upload_interval_sec: 60
+# # Enable Tiered Storage (enterprise feature).
+# # https://docs.redpanda.com/current/manage/tiered-storage/
+cloud_storage_enabled: false
+# cloud_storage_region: local
+# cloud_storage_access_key: minio
+# cloud_storage_secret_key: redpandaTieredStorage7
+# cloud_storage_api_endpoint: minio
+# cloud_storage_api_endpoint_port: 9000
+# cloud_storage_disable_tls: true
+# cloud_storage_bucket: redpanda
+# # Forces segments to be uploaded to Tiered Storage faster for the purposes of the quickstart
+# # https://docs.redpanda.com/current/reference/properties/object-storage-properties/#cloud_storage_segment_max_upload_interval_sec
+# cloud_storage_segment_max_upload_interval_sec: 60
 # Continuous Data Balancing (enterprise feature) continuously monitors your node and rack availability and disk usage. This enables self-healing clusters that dynamically balance partitions, ensuring smooth operations and optimal cluster performance.
 # https://docs.redpanda.com/current/manage/cluster-maintenance/continuous-data-balancing/
 partition_autobalancing_mode: continuous

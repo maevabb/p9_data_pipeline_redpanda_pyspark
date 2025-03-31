@@ -4,7 +4,6 @@ networks:
     driver: bridge
 volumes:
   redpanda: null
-  minio: null
 services:
   ##################
   # Redpanda Broker
@@ -53,8 +52,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-    depends_on:
-      - minio
+
   ####################
   # Redpanda Console #
   ####################
@@ -109,53 +107,6 @@ services:
       redpanda:
         condition: service_healthy
 
-  ####################
-  # MinIO for Tiered Storage #
-  # See https://min.io/
-  #
-  # NOTE: MinIO is included in this quickstart for development and evaluation purposes only.
-  # It is not supported for production deployments of Redpanda.
-  #
-  # For production environments, use one of the supported object storage providers:
-  # https://docs.redpanda.com/current/deploy/deployment-option/self-hosted/manual/production/requirements/#object-storage-providers-for-tiered-storage
-  ####################
-  minio:
-    container_name: minio
-    image: minio/minio
-    command: server --console-address ":9001" /data
-    ports:
-      - 9000:9000
-      - 9001:9001
-    environment:
-      MINIO_ROOT_USER: minio
-      MINIO_ROOT_PASSWORD: redpandaTieredStorage7
-      MINIO_SERVER_URL: "http://minio:9000"
-      MINIO_REGION_NAME: local
-      MINIO_DOMAIN: minio
-    volumes:
-      - minio:/data
-    networks:
-      redpanda_network:
-        aliases:
-          - redpanda.minio
-  mc:
-    depends_on:
-      - minio
-    image: minio/mc
-    container_name: mc
-    networks:
-      - redpanda_network
-    environment:
-      - AWS_ACCESS_KEY_ID=minio
-      - AWS_SECRET_ACCESS_KEY=redpandaTieredStorage7
-      - AWS_REGION=local
-    entrypoint: >
-      /bin/sh -c "
-      until (/usr/bin/mc config host add minio http://minio:9000 minio redpandaTieredStorage7) do echo '...waiting...' && sleep 1; done;
-      /usr/bin/mc mb minio/redpanda;
-      /usr/bin/mc policy set public minio/redpanda;
-      tail -f /dev/null
-      "
   ticket-producer:
     build:
       context: .
