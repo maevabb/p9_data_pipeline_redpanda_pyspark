@@ -88,61 +88,12 @@ services:
             urls: ["http://redpanda:9644"]
             username: superuser
             password: secretpassword
-        console:
-          # Configures Redpanda Console to fetch topic documentation from GitHub and display it in the UI.
-          # See https://docs.redpanda.com/current/console/config/topic-documentation/
-          topicDocumentation:
-            enabled: true
-            git:
-              enabled: true
-              repository:
-                url: https://github.com/redpanda-data/docs
-                branch: main
-                baseDirectory: tests/docker-compose
-        login:
-          enabled: true
-          jwtSecret: change-this-to-something-secret
-          useSecureCookies: false
-          # Enable plain login authentication (enterprise feature)
-          # See https://docs.redpanda.com/current/console/config/security/plain/
-          plain:
-            enabled: true
-            credentials:
-            - username: "jane"
-              password: "some-other-secret-password"
-            - username: "john"
-              password: "some-secret-password"
-        enterprise:
-          # Configures role-based access control to data and features in Redpanda Console.
-          # See https://docs.redpanda.com/current/console/config/security/authorization/
-          rbac:
-            enabled: true
-            roleBindingsFilepath: /tmp/role-bindings.yml
-      CONSOLE_ROLEBINDINGS_CONFIG_FILE: |
-        roleBindings:
-        - metadata:
-            name: Platform Ops
-          subjects:
-            - kind: user
-              provider: Plain
-              name: jane
-          roleName: admin
-        - metadata:
-            name: Software Engineers
-          subjects:
-            - kind: user
-              provider: Plain
-              name: john
-          roleName: editor
     ports:
       - 8080:8080
     depends_on:
       redpanda:
         condition: service_healthy
-    ####################
-  # rpk container to create the edu-filtered-domains topic #
-  # See https://docs.redpanda.com/current/reference/rpk/rpk-topic/rpk-topic-create/
-  ####################
+
   createtopic:
     command:
       - topic
