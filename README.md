@@ -19,12 +19,15 @@ Le but de ce projet est de mettre en place un pipeline de données permettant de
 ## Architecture
 Voici un schéma de flux des données, montrant les différentes étapes du pipeline de traitement des tickets clients, depuis la génération des tickets jusqu'à leur traitement :
 
-```` mermaid
-graph TD
-  A[Ticket Producer] --> B[Redpanda]
-  B --> C[PySpark Processor]
-  C --> D[Data Storage (S3)]
-````
+```mermaid
+flowchart LR
+    A[Ticket Producer] -->|Create 100 tickets| B[Redpanda]
+    B --> C[Ticket processor]
+    C --> D[/Tickets with team added .json /]
+    C --> E[/ Group by type request .json/]
+    D --> F[Data Storage AWS S3]
+    E --> F[Data Storage AWS S3]
+```
 
 - **Ticket Producer** : Génère les tickets clients en temps réel et les envoie dans Redpanda.
 - **Redpanda** : Stocke les tickets clients dans un cluster Kafka-compatible pour une gestion en temps réel.
@@ -56,8 +59,7 @@ cd p9_data_pipeline_redpanda_pyspark
 3. Construisez les services Docker :
 
 ````bash
-Copier
-docker-compose up --build
+docker-compose up -d --build
 ````
 
 Cette commande démarrera tous les services nécessaires à l'exécution du POC :
@@ -78,7 +80,7 @@ Le service **Ticket Processor** utilise PySpark pour lire les tickets depuis Red
 Les tickets traités et les aggrégations sont stockés dans S3 en format json  pour une analyse plus approfondie.
 
 ### Vidéo de démonstration
-Une démonstration vidéo du pipeline ETL en action est disponible **ici**. La vidéo couvre :
+Une démonstration vidéo du pipeline ETL en action est disponible **[ici](https://wwww.youtube.com)**. La vidéo couvre :
 
 - La génération des tickets en temps réel.
 - Leur ingestion dans Redpanda.
@@ -90,3 +92,4 @@ Ce POC démontre la faisabilité de la gestion de tickets clients en temps réel
 
 ## À propos
 Ce projet fait partie d'un effort plus large pour moderniser l’infrastructure de gestion des données d’InduTechData en exploitant les services cloud tout en garantissant l’interopérabilité avec l’infrastructure existante.
+
