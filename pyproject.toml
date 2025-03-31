@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "p9 - modéliser une infrastructure dans le cloud"
+version = "0.1.0"
+description = ""
+authors = ["Maeva Beauvillain <m.berte@hotmail.fr>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+confluent-kafka = "^2.8.2"
+faker = "^37.0.2"
+dotenv = "^0.9.9"
+datetime = "^5.5"
+pyspark = "^3.5.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

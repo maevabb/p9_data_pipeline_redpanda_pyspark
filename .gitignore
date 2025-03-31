@@ -1,0 +1,10 @@
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Poetry virtual environment
+.poetry/
+
+# Ignore environment-specific files
+.env

@@ -1,0 +1,26 @@
+# ticket_producer/Dockerfile
+
+FROM python:3.11-slim
+
+# Dépendances système
+RUN apt-get update && apt-get install -y curl build-essential && rm -rf /var/lib/apt/lists/*
+
+# Installation de Poetry
+RUN apt-get update && \
+    apt-get install -y python3-pip gcc && \
+    pip install poetry && \
+    poetry config virtualenvs.create false
+
+# Création d’un dossier pour l'app
+WORKDIR /app
+
+# Copie des fichiers du projet (racine)
+COPY ../pyproject.toml ../poetry.lock ../.env /app/
+
+# Installation des dépendances
+RUN poetry install --no-root --only main
+
+# Copie du script dans l'image
+COPY ticket_producer/ticket_producer.py /app/
+
+CMD ["poetry", "run", "python", "ticket_producer.py"]

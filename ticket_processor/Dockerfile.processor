@@ -1,0 +1,74 @@
+# Utilisation de l'image OpenJDK 11 comme base
+FROM openjdk:11
+
+USER root
+
+# Mise à jour des paquets et installation des dépendances
+RUN apt-get update && apt-get install -y \
+  curl \
+  wget \
+  build-essential \
+  gcc \
+  make \
+  libssl-dev \
+  zlib1g-dev \
+  libbz2-dev \
+  libreadline-dev \
+  libsqlite3-dev \
+  wget \
+  curl \
+  llvm \
+  libncurses5-dev \
+  libncursesw5-dev \
+  xz-utils \
+  tk-dev \
+  libffi-dev \
+  liblzma-dev \
+  python3-pip \
+  gnupg2 \
+  lsb-release \
+  && rm -rf /var/lib/apt/lists/*
+
+# Télécharger et installer Python 3.11 manuellement
+RUN wget https://www.python.org/ftp/python/3.11.0/Python-3.11.0.tgz -O /tmp/python3.11.tgz \
+  && tar -xvf /tmp/python3.11.tgz -C /tmp \
+  && cd /tmp/Python-3.11.0 \
+  && ./configure --enable-optimizations \
+  && make altinstall \
+  && rm -rf /tmp/Python-3.11.0 /tmp/python3.11.tgz
+
+# Créer des liens symboliques pour Python 3.11
+RUN ln -sf /usr/local/bin/python3.11 /usr/bin/python
+RUN ln -sf /usr/local/bin/python3.11 /usr/bin/python3
+
+# Assurer que pip est bien installé et à jour
+RUN python3 -m ensurepip --upgrade
+RUN python3 -m pip install --upgrade pip
+
+# Installation de Poetry
+RUN python3 -m pip install poetry && poetry config virtualenvs.create false
+
+# Définition des variables d'environnement pour Java et Spark
+ENV JAVA_HOME=/usr/local/openjdk-11
+ENV SPARK_HOME=/opt/spark-3.5.5-bin-hadoop3
+ENV PATH=$JAVA_HOME/bin:$SPARK_HOME/bin:$PATH
+
+# Téléchargement et installation de Spark
+RUN wget https://dlcdn.apache.org/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz -O /tmp/spark.tgz \
+  && tar xvf /tmp/spark.tgz -C /opt/ \
+  && rm /tmp/spark.tgz
+
+# Dossier de travail
+WORKDIR /app
+
+# Copie des fichiers globaux du projet
+COPY ../pyproject.toml ../poetry.lock ../.env /app/
+
+# Installation des dépendances Python avec Poetry
+RUN poetry install --no-root --only main
+
+# Copie du script Python à exécuter
+COPY ticket_processor/ticket_processor.py /app/
+
+# Commande d'exécution
+CMD ["poetry", "run", "python", "ticket_processor.py"]
