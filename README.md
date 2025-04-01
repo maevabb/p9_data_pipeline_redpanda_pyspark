@@ -80,7 +80,7 @@ Le service **Ticket Processor** utilise PySpark pour lire les tickets depuis Red
 Les tickets traités et les aggrégations sont stockés dans S3 en format json pour une analyse future plus approfondie.
 
 ### Vidéo de démonstration
-Une démonstration vidéo du pipeline ETL en action est disponible **[ici](https://wwww.youtube.com)**. La vidéo couvre :
+Une démonstration vidéo du pipeline ETL en action est disponible **[ici](https://www.youtube.com/watch?v=9nHeqhERQYE)**. La vidéo couvre :
 
 - La génération des tickets en temps réel.
 - Leur ingestion dans Redpanda.
