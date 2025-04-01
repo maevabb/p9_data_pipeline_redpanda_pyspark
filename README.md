@@ -77,7 +77,7 @@ Le service **Ticket Processor** utilise PySpark pour lire les tickets depuis Red
  Vous pouvez personnaliser les scripts PySpark pour ajuster les analyses selon vos besoins.
 
 ### Visualisation des résultats
-Les tickets traités et les aggrégations sont stockés dans S3 en format json  pour une analyse plus approfondie.
+Les tickets traités et les aggrégations sont stockés dans S3 en format json pour une analyse future plus approfondie.
 
 ### Vidéo de démonstration
 Une démonstration vidéo du pipeline ETL en action est disponible **[ici](https://wwww.youtube.com)**. La vidéo couvre :
@@ -93,3 +93,28 @@ Ce POC démontre la faisabilité de la gestion de tickets clients en temps réel
 ## À propos
 Ce projet fait partie d'un effort plus large pour moderniser l’infrastructure de gestion des données d’InduTechData en exploitant les services cloud tout en garantissant l’interopérabilité avec l’infrastructure existante.
 
+Voici le flux de données du projet global depuis les différentes sources : 
+
+```mermaid
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+flowchart LR
+    A((Capteurs IoT)) --> B["`**Redpanda** 
+    (streaming)`"]
+    B --> |"temps réel"|C["`**AWS S3** 
+    (stockage)`"]
+    C:::cloudclass --> |"`temps réel
+    (kinesis)`"|D["`**AWS Redshift** 
+    (analyse)`"]:::cloudclass
+    E{{"`**SQL Server**
+    (ERP & CRM)`"}}:::otherclass --> |"`sync via
+    AWS DMS`"|D
+    F{{"`fa:fa-lock
+    Active 
+    Directory`"}}:::otherclass --> |"sync"|G["`fa:fa-lock
+    AWS
+    Managed AD`"]:::cloudclass
+    classDef cloudclass fill:#FDF1B8
+    classDef cloudclass stroke:#000000
+    classDef otherclass fill:#F0FFFF
+    classDef otherclass stroke:#000000
+```
